@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <h1>Grade Report</h1>
+
+  <p>Number of students below their grade average: <%= @grade_report['Below Average'] %></p>
+
+  <h1>Add Student</h1>
+  <%= form_with model: @student, url: grades_path, method: :post, local: true, html: { class: "row g-3" } do |f| %>
+    <div class="col-md-3">
+      <%= f.label :name, "Name:" %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="col-md-2">
+      <%= f.label :subject1, "Subject 1:" %>
+      <%= f.text_field :subject1, class: "form-control" %>
+    </div>
+
+    <div class="col-md-2">
+      <%= f.label :subject2, "Subject 2:" %>
+      <%= f.text_field :subject2, class: "form-control" %>
+    </div>
+
+    <div class="col-md-2">
+      <%= f.label :subject3, "Subject 3:" %>
+      <%= f.text_field :subject3, class: "form-control" %>
+    </div>
+
+    <div class="col-md-2">
+      <%= f.label :subject4, "Subject 4:" %>
+      <%= f.text_field :subject4, class: "form-control" %>
+    </div>
+
+    <div class="col-md-1">
+      <%= f.submit "Add", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <h1>Score card</h1>
+
+  <table class="table table-bordered mt-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Subject1</th>
+        <th>Subject2</th>
+        <th>Subject3</th>
+        <th>Subject4</th>
+        <th>Grand-Total</th>
+        <th>Grade</th>
+        <th>Average-Compare</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% total_score_all = @students.sum { |student| student.subject1 + student.subject2 + student.subject3 + student.subject4 } %>
+      <% overall_average_score = total_score_all / (@students.length * 4).to_f %>
+      <% @students.each do |student| %>
+        <% total_score = student.subject1 + student.subject2 + student.subject3 + student.subject4 %>
+        <tr>
+          <td><%= student.id %></td>
+          <td><%= student.subject1 %></td>
+          <td><%= student.subject2 %></td>
+          <td><%= student.subject3 %></td>
+          <td><%= student.subject4 %></td>
+          <td><%= total_score %></td>
+          <td><%= calculate_grade(student) %></td>
+          <td><%= total_score > overall_average_score ? 'ABOVE' : 'BELOW' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h1>Grade report</h1>
+
+  <p>Number of students in A Grade :: <%= @grade_report['A'] %></p>
+  <p>Number of students in B Grade :: <%= @grade_report['B'] %></p>
+  <p>Number of students in C Grade :: <%= @grade_report['C'] %></p>
+  <p>Number of students above their grade average :: <%= @grade_report['Above Average'] %></p>
+  <p>Number of students below their grade average :: <%= @grade_report['Below Average'] %></p>
+
+</div>
